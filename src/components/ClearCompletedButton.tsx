@@ -1,5 +1,7 @@
 import React from "react";
 import { Text, TouchableOpacity, Alert } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
+import { getThemeColors } from "../utils/theme";
 
 interface ClearCompletedButtonProps {
   completedCount: number;
@@ -7,6 +9,10 @@ interface ClearCompletedButtonProps {
 }
 
 export function ClearCompletedButton({ completedCount, onClearCompleted }: ClearCompletedButtonProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const themeColors = getThemeColors(isDark);
+
   const handleClearCompleted = () => {
     if (completedCount === 0) return;
 
@@ -23,8 +29,11 @@ export function ClearCompletedButton({ completedCount, onClearCompleted }: Clear
   if (completedCount === 0) return null;
 
   return (
-    <TouchableOpacity onPress={handleClearCompleted} className="mb-12 p-3 bg-red-50 rounded-lg border border-red-200">
-      <Text className="text-center text-red-600 font-medium">
+    <TouchableOpacity
+      onPress={handleClearCompleted}
+      className={`mb-12 p-3 ${themeColors.danger} rounded-lg border ${themeColors.dangerBorder}`}
+    >
+      <Text className={`text-center ${themeColors.dangerText} font-medium`}>
         Clear {completedCount} Completed Todo{completedCount > 1 ? "s" : ""}
       </Text>
     </TouchableOpacity>

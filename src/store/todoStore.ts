@@ -3,6 +3,7 @@ import { create } from "zustand";
 export interface Todo {
   id: string;
   text: string;
+  description?: string;
   completed: boolean;
   createdAt: Date;
 }
@@ -13,15 +14,17 @@ interface TodoState {
   todos: Todo[];
   filter: FilterType;
   inputText: string;
+  inputDescription: string;
 }
 
 interface TodoActions {
-  addTodo: (text: string) => void;
+  addTodo: (text: string, description?: string) => void;
   toggleTodo: (id: string) => void;
   deleteTodo: (id: string) => void;
   clearCompleted: () => void;
   setFilter: (filter: FilterType) => void;
   setInputText: (text: string) => void;
+  setInputDescription: (description: string) => void;
   getFilteredTodos: () => Todo[];
   getStats: () => {
     total: number;
@@ -37,15 +40,17 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
   todos: [],
   filter: "all",
   inputText: "",
+  inputDescription: "",
 
   // Actions
-  addTodo: (text: string) => {
+  addTodo: (text: string, description?: string) => {
     const trimmedText = text.trim();
     if (!trimmedText) return;
 
     const newTodo: Todo = {
       id: Date.now().toString(),
       text: trimmedText,
+      description: description?.trim() || undefined,
       completed: false,
       createdAt: new Date(),
     };
@@ -53,6 +58,7 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
     set((state) => ({
       todos: [newTodo, ...state.todos],
       inputText: "",
+      inputDescription: "",
     }));
   },
 
@@ -80,6 +86,10 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
 
   setInputText: (text: string) => {
     set({ inputText: text });
+  },
+
+  setInputDescription: (description: string) => {
+    set({ inputDescription: description });
   },
 
   getFilteredTodos: () => {

@@ -1,5 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
+import { useTheme } from "../contexts/ThemeContext";
+import { getThemeColors } from "../utils/theme";
 
 interface TodoStatsProps {
   total: number;
@@ -8,11 +10,15 @@ interface TodoStatsProps {
 }
 
 export function TodoStats({ total, active, completed }: TodoStatsProps) {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const themeColors = getThemeColors(isDark);
+
   if (total === 0) return null;
 
   return (
-    <View className="mb-4 p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-      <Text className="text-center text-gray-600">
+    <View className={`mb-4 p-3 ${themeColors.cardBackground} rounded-lg shadow-sm border ${themeColors.border}`}>
+      <Text className={`text-center ${themeColors.textSecondary}`}>
         {total} total • {active} active • {completed} completed
       </Text>
     </View>

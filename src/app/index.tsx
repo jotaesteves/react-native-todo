@@ -1,10 +1,23 @@
 import React from "react";
 import { View, Alert, KeyboardAvoidingView, Platform } from "react-native";
 import { useTodoStore } from "../store/todoStore";
-import { TodoHeader, TodoInput, TodoStats, TodoFilters, TodoList, ClearCompletedButton } from "../components";
+import { useTheme } from "../contexts/ThemeContext";
+import { getThemeColors } from "../utils/theme";
+import {
+  TodoHeader,
+  TodoInput,
+  TodoStats,
+  TodoFilters,
+  TodoList,
+  ClearCompletedButton,
+  TodoDescription,
+} from "../components";
 
 export default function TodoApp() {
   const { filter, toggleTodo, deleteTodo, clearCompleted, getFilteredTodos, getStats } = useTodoStore();
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const themeColors = getThemeColors(isDark);
 
   const filteredTodos = getFilteredTodos();
   const stats = getStats();
@@ -21,11 +34,15 @@ export default function TodoApp() {
   };
 
   return (
-    <KeyboardAvoidingView className="flex-1 bg-gray-50" behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView
+      className={`flex-1 ${themeColors.background}`}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <TodoHeader />
 
-      <View className="flex-1 px-4 mt-2">
+      <View className="flex-1 px-4 mt-4">
         <TodoInput />
+        <TodoDescription />
 
         <TodoStats total={stats.total} active={stats.active} completed={stats.completed} />
 
